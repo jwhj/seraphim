@@ -1,0 +1,12 @@
+<v-dialog v-model="state.show" max-width="25em" persistent eager>
+	<v-card style="display:flex;flex-direction: column; padding:10px" min-height="10em">
+		<div style="flex-grow:1;padding:10px">
+			{{state.label}}
+		</div>
+		<div style="text-align:right">
+			<v-btn color="primary" text dense small ref="confirmRef" @click="confirm">
+				{{props.confirmLabel || 'Confirm'}}</v-btn>
+			<v-btn text dense small ref="cancelRef" @click="cancel">{{props.cancelLabel || 'Cancel'}}</v-btn>
+		</div>
+	</v-card>
+</v-dialog>

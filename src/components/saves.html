@@ -1,0 +1,28 @@
+<div style="padding:10px">
+	<h1>UI凑合一下得了</h1>
+	<v-btn icon @click="add">
+		<v-icon>mdi-plus</v-icon>
+	</v-btn>
+	<!-- <div :style="styles.savesList">
+		<v-card v-for="i of savesListRef" :key="i" :style="styles.save" elevation="4" @click>
+			<v-card-title>{{i}}</v-card-title>
+			<v-card-actions>
+				<v-btn icon>
+					<v-icon>delete</v-icon>
+				</v-btn>
+			</v-card-actions>
+		</v-card>
+	</div> -->
+	<v-list :style="styles.savesList">
+		<v-list-item v-for="i of savesListRef" :key="i" :style="styles.save" @click="select(i)">
+			<v-list-item-content>
+				{{i}}
+			</v-list-item-content>
+			<v-list-item-action>
+				<v-btn icon color=" warning" @click.stop="del(i)">
+					<v-icon>delete</v-icon>
+				</v-btn>
+			</v-list-item-action>
+		</v-list-item>
+	</v-list>
+</div>

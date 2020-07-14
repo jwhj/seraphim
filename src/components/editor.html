@@ -1,0 +1,32 @@
+<div :style="styles.frm">
+	<v-list :style="styles.sectionList">
+		<v-subheader>
+			<v-list-item-content>Sections</v-list-item-content>
+			<v-list-item-action>
+				<v-btn @click="newSection">Add</v-btn>
+			</v-list-item-action>
+		</v-subheader>
+		<v-list-item v-for="i of sectionListRef" :key="i" @click="loadSection(i)">
+			<v-list-item-content>
+				{{i}}
+			</v-list-item-content>
+			<v-list-item-action>
+				<v-btn icon color="warning" @click.stop="deleteSection(i)">
+					<v-icon>delete</v-icon>
+				</v-btn>
+			</v-list-item-action>
+		</v-list-item>
+	</v-list>
+	<div style="flex-grow: 1;height: 100%;padding-left: 10px">
+		<div style="display:inline-block;margin-right:10px">
+			<v-text-field label="Game" v-model="state.gameName" @keydown.enter="loadSectionList(state.gameName)">
+			</v-text-field>
+		</div>
+		<div style="display:inline-block;margin-right:10px">
+			<v-text-field label="Section" v-model="state.sectionName"></v-text-field>
+		</div>
+		<v-textarea no-resize rows="20" v-model="state.content" @change="updateSection" ref="editorRef"></v-textarea>
+	</div>
+	<v-confirm></v-confirm>
+	<v-prompt></v-prompt>
+</div>

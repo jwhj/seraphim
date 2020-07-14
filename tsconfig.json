@@ -1,0 +1,16 @@
+{
+	"files": [
+		"src/global.d.ts",
+		"src/index.ts"
+	],
+	"compilerOptions": {
+		"outDir": "dist",
+		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"target": "es2017",
+		"module": "es6",
+		"moduleResolution": "node",
+		"sourceMap": true,
+		"incremental": true
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"files": [
+		"index.ts"
+	],
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"noImplicitAny": true,
+		"sourceMap": true
+	}
+}
