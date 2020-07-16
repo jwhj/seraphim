@@ -32,7 +32,7 @@ const backgroundImage = defineComponent({
 				flag.value = true
 				setTimeout(() => {
 					prevImageStyle.backgroundImage = curImageStyle.backgroundImage
-				}, 500)
+				}, 1000)
 			})
 		})
 		return {
