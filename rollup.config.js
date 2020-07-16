@@ -7,6 +7,7 @@ export default {
 	output: {
 		file: 'public/bundle.js',
 		format: 'umd',
+		sourcemap: true,
 		globals: {
 			'@vue/composition-api': 'vueCompositionApi',
 			'typed.js': 'Typed',
