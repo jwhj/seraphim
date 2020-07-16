@@ -10,7 +10,7 @@ const backgroundImage = defineComponent({
 	props: {
 		src: String
 	},
-	setup(props) {
+	setup(props, ctx) {
 		const styles = computed<StylesType>(() => ({
 			backgroundImageDiv: {
 				position: 'fixed',
@@ -25,13 +25,16 @@ const backgroundImage = defineComponent({
 		const prevImageStyle = reactive({ backgroundImage: '', ...styles.value.backgroundImageDiv })
 		const curImageStyle = reactive({ backgroundImage: '', ...styles.value.backgroundImageDiv })
 		const flag = ref(true)
+		let pendingImage: string
 		watch(() => props.src, value => {
+			if (pendingImage) prevImageStyle.backgroundImage = pendingImage
 			flag.value = false
-			setTimeout(() => {
-				curImageStyle.backgroundImage = `url(${value})`
+			ctx.root.$nextTick(() => {
+				pendingImage = curImageStyle.backgroundImage = `url(${value})`
 				flag.value = true
 				setTimeout(() => {
-					prevImageStyle.backgroundImage = curImageStyle.backgroundImage
+					prevImageStyle.backgroundImage = pendingImage
+					pendingImage = undefined
 				}, 1000)
 			})
 		})
@@ -45,6 +48,7 @@ const backgroundImage = defineComponent({
 })
 import saves from './saves'
 import { $prompt } from './dialog-utils'
+import { assert } from 'console'
 export default defineComponent({
 	template,
 	components: {

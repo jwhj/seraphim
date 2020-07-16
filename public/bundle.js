@@ -435,7 +435,7 @@
         props: {
             src: String
         },
-        setup(props) {
+        setup(props, ctx) {
             const styles = VueCompositionApi.computed(() => ({
                 backgroundImageDiv: {
                     position: 'fixed',
@@ -450,13 +450,17 @@
             const prevImageStyle = VueCompositionApi.reactive(Object.assign({ backgroundImage: '' }, styles.value.backgroundImageDiv));
             const curImageStyle = VueCompositionApi.reactive(Object.assign({ backgroundImage: '' }, styles.value.backgroundImageDiv));
             const flag = VueCompositionApi.ref(true);
+            let pendingImage;
             VueCompositionApi.watch(() => props.src, value => {
+                if (pendingImage)
+                    prevImageStyle.backgroundImage = pendingImage;
                 flag.value = false;
-                setTimeout(() => {
-                    curImageStyle.backgroundImage = `url(${value})`;
+                ctx.root.$nextTick(() => {
+                    pendingImage = curImageStyle.backgroundImage = `url(${value})`;
                     flag.value = true;
                     setTimeout(() => {
-                        prevImageStyle.backgroundImage = curImageStyle.backgroundImage;
+                        prevImageStyle.backgroundImage = pendingImage;
+                        pendingImage = undefined;
                     }, 1000);
                 });
             });
