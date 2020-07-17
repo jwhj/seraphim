@@ -176,9 +176,7 @@
         }
     }
 
-    var template = "<div :style=\"styles.frm\" @touchmove.prevent>\r\n\t<background-image :src=\"state.backgroundImage\" @freeze=\"freeze\" @unfreeze=\"unfreeze\"></background-image>\r\n\t<v-fade-transition>\r\n\t\t<div :style=\"styles.optsmodal\" v-if=\"state.opts\">\r\n\t\t\t<v-list dark dense rounded style=\"background-color: black;width: 70%\">\r\n\t\t\t\t<v-list-item v-for=\"i of state.opts.length\" @click=\"choose(i-1)\">{{state.opts[i-1]}}</v-list-item>\r\n\t\t\t</v-list>\r\n\t\t</div>\r\n\t</v-fade-transition>\r\n\t<div :style=\"styles.dialogContainer\" @click=\"next\" @touchmove.prevent>\r\n\t\t<v-card :style=\"styles.dialog\" elevation=\"4\">\r\n\t\t\t<div :style=\"styles.char\" v-show=\"state.char\">\r\n\t\t\t\t{{state.char}}\r\n\t\t\t\t<v-divider />\r\n\t\t\t</div>\r\n\t\t\t<span v-html=\"state.text\"></span><span class=\"type\"></span>\r\n\t\t</v-card>\r\n\t</div>\r\n\t<div style=\"position:fixed;right:0;top:0;padding:20px\">\r\n\t\t<v-btn fab small @click=\"fastForward(10)\" style=\"margin-right:10px;\">\r\n\t\t\t<v-icon>accessible_forward</v-icon>\r\n\t\t</v-btn>\r\n\t\t<v-btn fab small @click=\"fastForward(Infinity)\">\r\n\t\t\t<v-icon>directions_run</v-icon>\r\n\t\t</v-btn>\r\n\t</div>\r\n\t<v-dialog v-model=\"state.showSaves\" max-width=\"70%\" eager>\r\n\t\t<v-card style=\"min-height:90%\">\r\n\t\t\t<display-saves @select=\"onSelectSave\" @del=\"deleteSave\" />\r\n\t\t</v-card>\r\n\t</v-dialog>\r\n\t<v-prompt></v-prompt>\r\n</div>";
-
-    var backgroundImageTemplate = "<div>\r\n\t<div key=\"1\" :style=\"prevImageStyle\"></div>\r\n\t<transition name=\"background\">\r\n\t\t<div key=\"2\" :style=\"curImageStyle\" v-if=\"flag\"></div>\r\n\t</transition>\r\n</div>";
+    var template = "<div :style=\"styles.frm\" @touchmove.prevent>\r\n\t<background-image :src=\"state.backgroundImage\"></background-image>\r\n\t<v-fade-transition>\r\n\t\t<div :style=\"styles.optsmodal\" v-if=\"state.opts\">\r\n\t\t\t<v-list dark dense rounded style=\"background-color: black;width: 70%\">\r\n\t\t\t\t<v-list-item v-for=\"i of state.opts.length\" @click=\"choose(i-1)\">{{state.opts[i-1]}}</v-list-item>\r\n\t\t\t</v-list>\r\n\t\t</div>\r\n\t</v-fade-transition>\r\n\t<div :style=\"styles.dialogContainer\" @click=\"next\" @touchmove.prevent>\r\n\t\t<v-card :style=\"styles.dialog\" elevation=\"4\">\r\n\t\t\t<div :style=\"styles.char\" v-show=\"state.char\">\r\n\t\t\t\t{{state.char}}\r\n\t\t\t\t<v-divider />\r\n\t\t\t</div>\r\n\t\t\t<span v-html=\"state.text\"></span><span class=\"type\"></span>\r\n\t\t</v-card>\r\n\t</div>\r\n\t<div style=\"position:fixed;right:0;top:0;padding:20px\">\r\n\t\t<v-btn fab small @click=\"fastForward(10)\" style=\"margin-right:10px;\">\r\n\t\t\t<v-icon>accessible_forward</v-icon>\r\n\t\t</v-btn>\r\n\t\t<v-btn fab small @click=\"fastForward(Infinity)\">\r\n\t\t\t<v-icon>directions_run</v-icon>\r\n\t\t</v-btn>\r\n\t</div>\r\n\t<v-dialog v-model=\"state.showSaves\" max-width=\"70%\" eager>\r\n\t\t<v-card style=\"min-height:90%\">\r\n\t\t\t<display-saves @select=\"onSelectSave\" @del=\"deleteSave\" />\r\n\t\t</v-card>\r\n\t</v-dialog>\r\n\t<v-prompt></v-prompt>\r\n</div>";
 
     function createCommonjsModule(fn, basedir, module) {
     	return module = {
@@ -430,8 +428,10 @@
         return value;
     };
 
-    const backgroundImage = VueCompositionApi.defineComponent({
-        template: backgroundImageTemplate,
+    var template$2 = "<div>\r\n\t<span v-for=\"img of imageList\" :key=\"img[0]\">\r\n\t\t<transition name=\"background\">\r\n\t\t\t<div :style=\"{backgroundImage:img[0],...styles.backgroundImageDiv}\" v-if=\"img[1]\"></div>\r\n\t\t</transition>\r\n\t</span>\r\n</div>";
+
+    var backgroundImage = VueCompositionApi.defineComponent({
+        template: template$2,
         props: {
             src: String
         },
@@ -447,29 +447,26 @@
                     backgroundSize: 'cover'
                 }
             }));
-            const prevImageStyle = VueCompositionApi.reactive(Object.assign({ backgroundImage: '' }, styles.value.backgroundImageDiv));
-            const curImageStyle = VueCompositionApi.reactive(Object.assign({ backgroundImage: '' }, styles.value.backgroundImageDiv));
-            const flag = VueCompositionApi.ref(true);
+            const imageList = VueCompositionApi.reactive([]);
             VueCompositionApi.watch(() => props.src, value => {
-                flag.value = false;
+                const img = [`url(${value})`, false];
+                imageList.push(img);
+                if (imageList.length > 10)
+                    imageList.splice(0, 5);
                 ctx.root.$nextTick(() => {
-                    curImageStyle.backgroundImage = `url(${value})`;
-                    flag.value = true;
-                    ctx.emit('freeze');
-                    setTimeout(() => ctx.emit('unfreeze'), 200);
-                    setTimeout(() => {
-                        prevImageStyle.backgroundImage = curImageStyle.backgroundImage;
-                    }, 500);
+                    imageList.pop();
+                    img[1] = true;
+                    imageList.push(img);
+                    // console.log(imageURLList)
                 });
             });
             return {
                 styles,
-                prevImageStyle,
-                curImageStyle,
-                flag
+                imageList
             };
         }
     });
+
     var game = VueCompositionApi.defineComponent({
         template,
         components: {
@@ -634,17 +631,15 @@
                 fastForward,
                 loadFromSave,
                 onSelectSave,
-                deleteSave,
-                freeze: () => ignoreAction = true,
-                unfreeze: () => ignoreAction = false
+                deleteSave
             };
         },
     });
 
-    var template$2 = "<div :style=\"styles.frm\">\r\n\t<v-list :style=\"styles.sectionList\">\r\n\t\t<v-subheader>\r\n\t\t\t<v-list-item-content>Sections</v-list-item-content>\r\n\t\t\t<v-list-item-action>\r\n\t\t\t\t<v-btn @click=\"newSection\">Add</v-btn>\r\n\t\t\t</v-list-item-action>\r\n\t\t</v-subheader>\r\n\t\t<v-list-item v-for=\"i of sectionListRef\" :key=\"i\" @click=\"loadSection(i)\">\r\n\t\t\t<v-list-item-content>\r\n\t\t\t\t{{i}}\r\n\t\t\t</v-list-item-content>\r\n\t\t\t<v-list-item-action>\r\n\t\t\t\t<v-btn icon color=\"warning\" @click.stop=\"deleteSection(i)\">\r\n\t\t\t\t\t<v-icon>delete</v-icon>\r\n\t\t\t\t</v-btn>\r\n\t\t\t</v-list-item-action>\r\n\t\t</v-list-item>\r\n\t</v-list>\r\n\t<div style=\"flex-grow: 1;height: 100%;padding-left: 10px\">\r\n\t\t<div style=\"display:inline-block;margin-right:10px\">\r\n\t\t\t<v-text-field label=\"Game\" v-model=\"state.gameName\" @keydown.enter=\"loadSectionList(state.gameName)\">\r\n\t\t\t</v-text-field>\r\n\t\t</div>\r\n\t\t<div style=\"display:inline-block;margin-right:10px\">\r\n\t\t\t<v-text-field label=\"Section\" v-model=\"state.sectionName\"></v-text-field>\r\n\t\t</div>\r\n\t\t<v-textarea no-resize rows=\"20\" v-model=\"state.content\" @change=\"updateSection\" ref=\"editorRef\"></v-textarea>\r\n\t</div>\r\n\t<v-confirm></v-confirm>\r\n\t<v-prompt></v-prompt>\r\n</div>";
+    var template$3 = "<div :style=\"styles.frm\">\r\n\t<v-list :style=\"styles.sectionList\">\r\n\t\t<v-subheader>\r\n\t\t\t<v-list-item-content>Sections</v-list-item-content>\r\n\t\t\t<v-list-item-action>\r\n\t\t\t\t<v-btn @click=\"newSection\">Add</v-btn>\r\n\t\t\t</v-list-item-action>\r\n\t\t</v-subheader>\r\n\t\t<v-list-item v-for=\"i of sectionListRef\" :key=\"i\" @click=\"loadSection(i)\">\r\n\t\t\t<v-list-item-content>\r\n\t\t\t\t{{i}}\r\n\t\t\t</v-list-item-content>\r\n\t\t\t<v-list-item-action>\r\n\t\t\t\t<v-btn icon color=\"warning\" @click.stop=\"deleteSection(i)\">\r\n\t\t\t\t\t<v-icon>delete</v-icon>\r\n\t\t\t\t</v-btn>\r\n\t\t\t</v-list-item-action>\r\n\t\t</v-list-item>\r\n\t</v-list>\r\n\t<div style=\"flex-grow: 1;height: 100%;padding-left: 10px\">\r\n\t\t<div style=\"display:inline-block;margin-right:10px\">\r\n\t\t\t<v-text-field label=\"Game\" v-model=\"state.gameName\" @keydown.enter=\"loadSectionList(state.gameName)\">\r\n\t\t\t</v-text-field>\r\n\t\t</div>\r\n\t\t<div style=\"display:inline-block;margin-right:10px\">\r\n\t\t\t<v-text-field label=\"Section\" v-model=\"state.sectionName\"></v-text-field>\r\n\t\t</div>\r\n\t\t<v-textarea no-resize rows=\"20\" v-model=\"state.content\" @change=\"updateSection\" ref=\"editorRef\"></v-textarea>\r\n\t</div>\r\n\t<v-confirm></v-confirm>\r\n\t<v-prompt></v-prompt>\r\n</div>";
 
     var editor = VueCompositionApi.defineComponent({
-        template: template$2,
+        template: template$3,
         setup() {
             const styles = VueCompositionApi.computed(() => ({
                 frm: {
@@ -717,13 +712,13 @@
         }
     });
 
-    var template$3 = "<div style=\"padding:10px\">\r\n\t<h1>UI就随便吧，反正也没有人会用</h1>\r\n\t<div style=\"display:flex;flex-direction:column;align-items:center;margin-top:20px\">\r\n\t\t<v-btn :style=\"styles.bar\" @click=\"start\">start</v-btn>\r\n\t\t<router-link :style=\"styles.bar\" to=\"/editor\" tag=\"v-btn\">Editor</router-link>\r\n\t</div>\r\n\t<v-prompt></v-prompt>\r\n</div>";
+    var template$4 = "<div style=\"padding:10px\">\r\n\t<h1>UI就随便吧，反正也没有人会用</h1>\r\n\t<div style=\"display:flex;flex-direction:column;align-items:center;margin-top:20px\">\r\n\t\t<v-btn :style=\"styles.bar\" @click=\"start\">start</v-btn>\r\n\t\t<router-link :style=\"styles.bar\" to=\"/editor\" tag=\"v-btn\">Editor</router-link>\r\n\t</div>\r\n\t<v-prompt></v-prompt>\r\n</div>";
 
     // import Vue from 'vue'
     // import VueRouter from 'vue-router'
     Vue.use(VueCompositionApi__default);
     const Index = VueCompositionApi.defineComponent({
-        template: template$3,
+        template: template$4,
         setup(props, ctx) {
             const styles = VueCompositionApi.computed(() => ({
                 bar: {

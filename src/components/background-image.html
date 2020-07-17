@@ -1,6 +1,7 @@
 <div>
-	<div key="1" :style="prevImageStyle"></div>
-	<transition name="background">
-		<div key="2" :style="curImageStyle" v-if="flag"></div>
-	</transition>
+	<span v-for="img of imageList" :key="img[0]">
+		<transition name="background">
+			<div :style="{backgroundImage:img[0],...styles.backgroundImageDiv}" v-if="img[1]"></div>
+		</transition>
+	</span>
 </div>

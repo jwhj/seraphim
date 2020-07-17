@@ -3,50 +3,9 @@ import Typed from 'typed.js'
 import Engine from './engine'
 // @ts-ignore
 import template from '../src/components/game.html'
-// @ts-ignore
-import backgroundImageTemplate from '../src/components/background-image.html'
-const backgroundImage = defineComponent({
-	template: backgroundImageTemplate,
-	props: {
-		src: String
-	},
-	setup(props, ctx) {
-		const styles = computed<StylesType>(() => ({
-			backgroundImageDiv: {
-				position: 'fixed',
-				left: 0,
-				top: 0,
-				width: '100%',
-				height: '100%',
-				backgroundPosition: 'center',
-				backgroundSize: 'cover'
-			}
-		}))
-		const prevImageStyle = reactive({ backgroundImage: '', ...styles.value.backgroundImageDiv })
-		const curImageStyle = reactive({ backgroundImage: '', ...styles.value.backgroundImageDiv })
-		const flag = ref(true)
-		watch(() => props.src, value => {
-			flag.value = false
-			ctx.root.$nextTick(() => {
-				curImageStyle.backgroundImage = `url(${value})`
-				flag.value = true
-				ctx.emit('freeze')
-				setTimeout(() => ctx.emit('unfreeze'), 200)
-				setTimeout(() => {
-					prevImageStyle.backgroundImage = curImageStyle.backgroundImage
-				}, 500)
-			})
-		})
-		return {
-			styles,
-			prevImageStyle,
-			curImageStyle,
-			flag
-		}
-	}
-})
 import saves from './saves'
 import { $prompt } from './dialog-utils'
+import backgroundImage from './background-image'
 export default defineComponent({
 	template,
 	components: {
@@ -205,9 +164,7 @@ export default defineComponent({
 			fastForward,
 			loadFromSave,
 			onSelectSave,
-			deleteSave,
-			freeze: () => ignoreAction = true,
-			unfreeze: () => ignoreAction = false
+			deleteSave
 		}
 	},
 })

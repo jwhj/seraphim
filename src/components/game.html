@@ -1,5 +1,5 @@
 <div :style="styles.frm" @touchmove.prevent>
-	<background-image :src="state.backgroundImage" @freeze="freeze" @unfreeze="unfreeze"></background-image>
+	<background-image :src="state.backgroundImage"></background-image>
 	<v-fade-transition>
 		<div :style="styles.optsmodal" v-if="state.opts">
 			<v-list dark dense rounded style="background-color: black;width: 70%">
