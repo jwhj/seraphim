@@ -59,8 +59,8 @@ export default defineComponent({
 				width: '100%',
 				height: '100%',
 				display: 'flex',
-				alignItems: 'flex-end',
-				justifyContent: 'center'
+				flexDirection: 'column-reverse',
+				alignItems: 'center',
 			},
 			dialogContainer: {
 				width: '80%',
@@ -145,13 +145,14 @@ export default defineComponent({
 		const next = async (): Promise<boolean> => {
 			if (typed) {
 				finish()
+				return true
 			} else if (!ignoreAction) {
 				ignoreAction = true
 				await engine.next()
 				ignoreAction = false
 				return await updateFromEngine()
 			}
-			return true
+			return false
 		}
 		const fastForward = async (numberOfSteps?: number) => {
 			numberOfSteps = numberOfSteps || Infinity

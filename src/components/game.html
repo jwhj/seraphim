@@ -7,7 +7,7 @@
 			</v-list>
 		</div>
 	</v-fade-transition>
-	<div :style="styles.dialogContainer" @click="next">
+	<div :style="styles.dialogContainer" @click="next" @touchmove.prevent>
 		<v-card :style="styles.dialog" elevation="4">
 			<div :style="styles.char" v-show="state.char">
 				{{state.char}}
