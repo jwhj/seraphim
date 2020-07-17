@@ -30,9 +30,11 @@ const backgroundImage = defineComponent({
 			ctx.root.$nextTick(() => {
 				curImageStyle.backgroundImage = `url(${value})`
 				flag.value = true
+				ctx.emit('freeze')
+				setTimeout(() => ctx.emit('unfreeze'), 200)
 				setTimeout(() => {
 					prevImageStyle.backgroundImage = curImageStyle.backgroundImage
-				}, 1000)
+				}, 500)
 			})
 		})
 		return {
@@ -202,7 +204,9 @@ export default defineComponent({
 			fastForward,
 			loadFromSave,
 			onSelectSave,
-			deleteSave
+			deleteSave,
+			freeze: () => ignoreAction = true,
+			unfreeze: () => ignoreAction = false
 		}
 	},
 })
