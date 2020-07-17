@@ -1,6 +1,6 @@
 <div>
-	<div :style="prevImageStyle"></div>
+	<div key="1" :style="prevImageStyle"></div>
 	<transition name="background">
-		<div :style="curImageStyle" v-if="flag"></div>
+		<div key="2" :style="curImageStyle" v-if="flag"></div>
 	</transition>
 </div>

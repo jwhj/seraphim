@@ -178,7 +178,7 @@
 
     var template = "<div :style=\"styles.frm\" @touchmove.prevent>\r\n\t<background-image :src=\"state.backgroundImage\"></background-image>\r\n\t<v-fade-transition>\r\n\t\t<div :style=\"styles.optsmodal\" v-if=\"state.opts\">\r\n\t\t\t<v-list dark dense rounded style=\"background-color: black;width: 70%\">\r\n\t\t\t\t<v-list-item v-for=\"i of state.opts.length\" @click=\"choose(i-1)\">{{state.opts[i-1]}}</v-list-item>\r\n\t\t\t</v-list>\r\n\t\t</div>\r\n\t</v-fade-transition>\r\n\t<div :style=\"styles.dialogContainer\" @click=\"next\">\r\n\t\t<v-card :style=\"styles.dialog\" elevation=\"4\">\r\n\t\t\t<div :style=\"styles.char\" v-show=\"state.char\">\r\n\t\t\t\t{{state.char}}\r\n\t\t\t\t<v-divider />\r\n\t\t\t</div>\r\n\t\t\t<span v-html=\"state.text\"></span><span class=\"type\"></span>\r\n\t\t</v-card>\r\n\t</div>\r\n\t<div style=\"position:fixed;right:0;top:0;padding:20px\">\r\n\t\t<v-btn fab small @click=\"fastForward(10)\" style=\"margin-right:10px;\">\r\n\t\t\t<v-icon>accessible_forward</v-icon>\r\n\t\t</v-btn>\r\n\t\t<v-btn fab small @click=\"fastForward(Infinity)\">\r\n\t\t\t<v-icon>directions_run</v-icon>\r\n\t\t</v-btn>\r\n\t</div>\r\n\t<v-dialog v-model=\"state.showSaves\" max-width=\"70%\" eager>\r\n\t\t<v-card style=\"min-height:90%\">\r\n\t\t\t<display-saves @select=\"onSelectSave\" @del=\"deleteSave\" />\r\n\t\t</v-card>\r\n\t</v-dialog>\r\n\t<v-prompt></v-prompt>\r\n</div>";
 
-    var backgroundImageTemplate = "<div>\r\n\t<div :style=\"prevImageStyle\"></div>\r\n\t<transition name=\"background\">\r\n\t\t<div :style=\"curImageStyle\" v-if=\"flag\"></div>\r\n\t</transition>\r\n</div>";
+    var backgroundImageTemplate = "<div>\r\n\t<div key=\"1\" :style=\"prevImageStyle\"></div>\r\n\t<transition name=\"background\">\r\n\t\t<div key=\"2\" :style=\"curImageStyle\" v-if=\"flag\"></div>\r\n\t</transition>\r\n</div>";
 
     function createCommonjsModule(fn, basedir, module) {
     	return module = {
@@ -450,17 +450,13 @@
             const prevImageStyle = VueCompositionApi.reactive(Object.assign({ backgroundImage: '' }, styles.value.backgroundImageDiv));
             const curImageStyle = VueCompositionApi.reactive(Object.assign({ backgroundImage: '' }, styles.value.backgroundImageDiv));
             const flag = VueCompositionApi.ref(true);
-            let pendingImage;
             VueCompositionApi.watch(() => props.src, value => {
-                if (pendingImage)
-                    prevImageStyle.backgroundImage = pendingImage;
                 flag.value = false;
                 ctx.root.$nextTick(() => {
-                    pendingImage = curImageStyle.backgroundImage = `url(${value})`;
+                    curImageStyle.backgroundImage = `url(${value})`;
                     flag.value = true;
                     setTimeout(() => {
-                        prevImageStyle.backgroundImage = pendingImage;
-                        pendingImage = undefined;
+                        prevImageStyle.backgroundImage = curImageStyle.backgroundImage;
                     }, 1000);
                 });
             });
