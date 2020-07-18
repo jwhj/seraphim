@@ -428,7 +428,7 @@
         return value;
     };
 
-    var template$2 = "<div>\r\n\t<span v-for=\"img of imageList\" :key=\"img[0]\">\r\n\t\t<transition name=\"background\">\r\n\t\t\t<div :style=\"{backgroundImage:img[0],...styles.backgroundImageDiv}\" v-if=\"img[1]\"></div>\r\n\t\t</transition>\r\n\t</span>\r\n</div>";
+    var template$2 = "<div>\r\n\t<span v-for=\"img of imageList\" :key=\"img[1]\">\r\n\t\t<transition name=\"background\">\r\n\t\t\t<div :style=\"{backgroundImage:img[0],...styles.backgroundImageDiv}\" v-if=\"img[2]\"></div>\r\n\t\t</transition>\r\n\t</span>\r\n</div>";
 
     var backgroundImage = VueCompositionApi.defineComponent({
         template: template$2,
@@ -449,13 +449,13 @@
             }));
             const imageList = VueCompositionApi.reactive([]);
             VueCompositionApi.watch(() => props.src, value => {
-                const img = [`url(${value})`, false];
+                const img = [`url(${value})`, v4_1(), false];
                 imageList.push(img);
                 if (imageList.length > 10)
                     imageList.splice(0, 5);
                 ctx.root.$nextTick(() => {
                     imageList.pop();
-                    img[1] = true;
+                    img[2] = true;
                     imageList.push(img);
                     // console.log(imageURLList)
                 });

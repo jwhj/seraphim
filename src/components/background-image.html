@@ -1,7 +1,7 @@
 <div>
-	<span v-for="img of imageList" :key="img[0]">
+	<span v-for="img of imageList" :key="img[1]">
 		<transition name="background">
-			<div :style="{backgroundImage:img[0],...styles.backgroundImageDiv}" v-if="img[1]"></div>
+			<div :style="{backgroundImage:img[0],...styles.backgroundImageDiv}" v-if="img[2]"></div>
 		</transition>
 	</span>
 </div>

@@ -1,4 +1,5 @@
 import { defineComponent, reactive, computed, ref, watch } from '@vue/composition-api'
+import uuid from 'uuid/v4'
 // @ts-ignore
 import template from '../src/components/background-image.html'
 export default defineComponent({
@@ -20,12 +21,12 @@ export default defineComponent({
 		}))
 		const imageList = reactive<(string | boolean)[][]>([])
 		watch(() => props.src, value => {
-			const img = [`url(${value})`, false]
+			const img = [`url(${value})`, uuid(), false]
 			imageList.push(img)
 			if (imageList.length > 10) imageList.splice(0, 5)
 			ctx.root.$nextTick(() => {
 				imageList.pop()
-				img[1] = true
+				img[2] = true
 				imageList.push(img)
 				// console.log(imageURLList)
 			})
