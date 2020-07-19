@@ -19,9 +19,9 @@ export default defineComponent({
 				backgroundSize: 'cover'
 			}
 		}))
-		const imageList = reactive<(string | boolean)[][]>([])
+		const imageList = reactive<[string, string, boolean][]>([])
 		watch(() => props.src, value => {
-			const img = [`url(${value})`, uuid(), false]
+			const img: [string, string, boolean] = [`url(${value})`, uuid(), false]
 			imageList.push(img)
 			if (imageList.length > 10) imageList.splice(0, 5)
 			ctx.root.$nextTick(() => {
