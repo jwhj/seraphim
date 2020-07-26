@@ -176,7 +176,7 @@
         }
     }
 
-    var template = "<div :style=\"styles.frm\" @touchmove.prevent>\r\n\t<background-image :src=\"state.backgroundImage\"></background-image>\r\n\t<v-fade-transition>\r\n\t\t<div :style=\"styles.optsmodal\" v-if=\"state.opts\">\r\n\t\t\t<v-list dark dense rounded style=\"background-color: black;width: 70%\">\r\n\t\t\t\t<v-list-item v-for=\"i of state.opts.length\" @click=\"choose(i-1)\">{{state.opts[i-1]}}</v-list-item>\r\n\t\t\t</v-list>\r\n\t\t</div>\r\n\t</v-fade-transition>\r\n\t<div :style=\"styles.dialogContainer\" @click=\"next\" @touchmove.prevent>\r\n\t\t<v-card :style=\"styles.dialog\" elevation=\"4\">\r\n\t\t\t<div :style=\"styles.char\" v-show=\"state.char\">\r\n\t\t\t\t{{state.char}}\r\n\t\t\t\t<v-divider />\r\n\t\t\t</div>\r\n\t\t\t<span v-html=\"state.text\"></span><span class=\"type\"></span>\r\n\t\t</v-card>\r\n\t</div>\r\n\t<div style=\"position:fixed;right:0;top:0;padding:20px\">\r\n\t\t<v-btn fab small @click=\"fastForward(10)\" style=\"margin-right:10px;\">\r\n\t\t\t<v-icon>accessible_forward</v-icon>\r\n\t\t</v-btn>\r\n\t\t<v-btn fab small @click=\"fastForward(Infinity)\">\r\n\t\t\t<v-icon>directions_run</v-icon>\r\n\t\t</v-btn>\r\n\t</div>\r\n\t<v-dialog v-model=\"state.showSaves\" max-width=\"70%\" eager>\r\n\t\t<v-card style=\"min-height:90%\">\r\n\t\t\t<display-saves @select=\"onSelectSave\" @del=\"deleteSave\" />\r\n\t\t</v-card>\r\n\t</v-dialog>\r\n\t<v-prompt></v-prompt>\r\n</div>";
+    var template = "<div :style=\"styles.frm\" @touchmove.prevent>\r\n\t<background-image :src=\"state.backgroundImage\"></background-image>\r\n\t<transition name=\"optsmodal\">\r\n\t\t<div :style=\"styles.optsmodal\" v-if=\"state.opts\">\r\n\t\t\t<a-list :split=\"false\" style=\"background-color: black;color:white;width: 70%\">\r\n\t\t\t\t<a-list-item class=\"list-item\" style=\"transition:all 1s ease\" v-for=\"i of state.opts.length\"\r\n\t\t\t\t\t@click=\"choose(i-1)\">\r\n\t\t\t\t\t<span style=\"margin-left:10px\">\r\n\t\t\t\t\t\t{{state.opts[i-1]}}\r\n\t\t\t\t\t</span>\r\n\t\t\t\t</a-list-item>\r\n\t\t\t</a-list>\r\n\t\t</div>\r\n\t</transition>\r\n\t<div :style=\"styles.dialogContainer\" @click=\"next\" @touchmove.prevent>\r\n\t\t<a-card :style=\"styles.dialog\" :bodyStyle=\"{padding:'0'}\" :bordered=\"false\">\r\n\t\t\t<div :style=\"styles.char\" v-show=\"state.char\">\r\n\t\t\t\t{{state.char}}\r\n\t\t\t\t<!-- <a-divider /> -->\r\n\t\t\t</div>\r\n\t\t\t<span v-html=\"state.text\"></span><span class=\"type\"></span>\r\n\t\t</a-card>\r\n\t</div>\r\n\t<div style=\"position:fixed;right:0;top:0;padding:20px\">\r\n\t\t<!-- <v-btn fab small @click=\"fastForward(10)\" style=\"margin-right:10px;\">\r\n\t\t\t<v-icon>accessible_forward</v-icon>\r\n\t\t</v-btn>\r\n\t\t<v-btn fab small @click=\"fastForward(Infinity)\">\r\n\t\t\t<v-icon>directions_run</v-icon>\r\n\t\t</v-btn> -->\r\n\t\t<a-button shape=\"circle\" icon=\"right\" style=\"margin-right:10px\" @click=\"fastForward(10)\"></a-button>\r\n\t\t<a-button shape=\"circle\" icon=\"double-right\" @click=\"fastForward(Infinity)\"></a-button>\r\n\t</div>\r\n\t<a-modal centered width=\"70%\" :bodyStyle=\"{height:'90%'}\" :closable=\"false\" :footer=\"null\"\r\n\t\tv-model=\"state.showSaves\">\r\n\t\t<!-- <v-card style=\"min-height:90%\"> -->\r\n\t\t<display-saves @select=\"onSelectSave\" @del=\"deleteSave\" />\r\n\t\t<!-- </v-card> -->\r\n\t</a-modal>\r\n\t<a-prompt></a-prompt>\r\n</div>";
 
     function createCommonjsModule(fn, basedir, module) {
     	return module = {
@@ -332,9 +332,7 @@
         }
     });
 
-    var vPromptTemplate = "<v-dialog v-model=\"state.show\" max-width=\"25em\" persistent eager>\r\n\t<v-card style=\"padding:10px\">\r\n\t\t<!-- <v-card-title style=\"padding-left:0\">{{state.label}}</v-card-title> -->\r\n\t\t<div style=\"padding:10px\">\r\n\t\t\t<v-text-field :label=\"state.label\" v-model=\"state.text\" autofocus outlined dense @keydown.stop\r\n\t\t\t\t@keydown.enter=\"confirm\">\r\n\t\t\t</v-text-field>\r\n\t\t</div>\r\n\t\t<div style=\"text-align: right;\">\r\n\t\t\t<v-btn color=\"primary\" @click=\"confirm\" text small>{{props.confirmLabel || 'Confirm'}}</v-btn>\r\n\t\t\t<v-btn @click=\"cancel\" text small>{{props.cancelLable || 'Cancel'}}</v-btn>\r\n\t\t</div>\r\n\t</v-card>\r\n</v-dialog>";
-
-    var vConfirmTemplate = "<v-dialog v-model=\"state.show\" max-width=\"25em\" persistent eager>\r\n\t<v-card style=\"display:flex;flex-direction: column; padding:10px\" min-height=\"10em\">\r\n\t\t<div style=\"flex-grow:1;padding:10px\">\r\n\t\t\t{{state.label}}\r\n\t\t</div>\r\n\t\t<div style=\"text-align:right\">\r\n\t\t\t<v-btn color=\"primary\" text dense small ref=\"confirmRef\" @click=\"confirm\">\r\n\t\t\t\t{{props.confirmLabel || 'Confirm'}}</v-btn>\r\n\t\t\t<v-btn text dense small ref=\"cancelRef\" @click=\"cancel\">{{props.cancelLabel || 'Cancel'}}</v-btn>\r\n\t\t</div>\r\n\t</v-card>\r\n</v-dialog>";
+    var aPromptTemplate = "<!-- <v-dialog v-model=\"state.show\" max-width=\"25em\" persistent eager>\r\n\t<v-card style=\"padding:10px\">\r\n\t\t<div style=\"padding:10px\">\r\n\t\t\t<v-text-field :label=\"state.label\" v-model=\"state.text\" autofocus outlined dense @keydown.stop\r\n\t\t\t\t@keydown.enter=\"confirm\">\r\n\t\t\t</v-text-field>\r\n\t\t</div>\r\n\t\t<div style=\"text-align: right;\">\r\n\t\t\t<v-btn color=\"primary\" @click=\"confirm\" text small>{{props.confirmLabel || 'Confirm'}}</v-btn>\r\n\t\t\t<v-btn @click=\"cancel\" text small>{{props.cancelLable || 'Cancel'}}</v-btn>\r\n\t\t</div>\r\n\t</v-card>\r\n</v-dialog> -->\r\n<a-modal :closable=\"false\" :maskClosable=\"false\" v-model=\"state.show\" @cancel=\"cancel\" @ok=\"confirm\">\r\n\t<div stype=\"padding:10px\">\r\n\t\t<a-input :placeholder=\"state.label\" v-model=\"state.text\" ref=\"inputRef\" @pressEnter=\"confirm\" />\r\n\t</div>\r\n</a-modal>";
 
     const promptState = VueCompositionApi.reactive({
         label: '',
@@ -343,7 +341,7 @@
     });
     let resolveText;
     const vPrompt = VueCompositionApi.defineComponent({
-        template: vPromptTemplate,
+        template: aPromptTemplate,
         props: {
             confirmLabel: String,
             cancelLabel: String
@@ -356,15 +354,21 @@
             const cancel = () => {
                 resolveText(undefined);
             };
+            const inputRef = VueCompositionApi.ref();
+            VueCompositionApi.watch(() => promptState.show, value => {
+                if (value)
+                    inputRef.value.focus();
+            });
             return {
                 props,
                 state,
+                inputRef,
                 confirm,
                 cancel
             };
         }
     });
-    Vue.component('v-prompt', vPrompt);
+    Vue.component('a-prompt', vPrompt);
     const $prompt = async (label) => {
         promptState.label = label;
         promptState.show = true;
@@ -375,58 +379,63 @@
         promptState.show = false;
         return text;
     };
-    const confirmState = VueCompositionApi.reactive({
-        label: '',
-        show: false,
-        defaultFocus: ''
-    });
-    let resolveConfirm;
-    const vConfirm = VueCompositionApi.defineComponent({
-        template: vConfirmTemplate,
-        props: {
-            confirmLabel: String,
-            cancelLabel: String
-        },
-        setup(props, ctx) {
-            const state = confirmState;
-            const confirmRef = VueCompositionApi.ref();
-            const cancelRef = VueCompositionApi.ref();
-            const confirm = () => {
-                resolveConfirm(true);
-            };
-            const cancel = () => {
-                resolveConfirm(false);
-            };
-            VueCompositionApi.watch(() => state.show, value => {
-                if (value) {
-                    ctx.root.$nextTick(() => {
-                        if (state.defaultFocus === 'confirm')
-                            confirmRef.value.$el.focus();
-                        else if (state.defaultFocus === 'cancel')
-                            cancelRef.value.$el.focus();
-                    });
-                }
-            });
-            return {
-                props,
-                state,
-                confirmRef, cancelRef,
-                confirm,
-                cancel
-            };
-        }
-    });
-    Vue.component('v-confirm', vConfirm);
-    const $confirm = async (label, defaultFocus = 'confirm') => {
-        confirmState.label = label;
-        confirmState.show = true;
-        confirmState.defaultFocus = defaultFocus;
-        const value = await new Promise((res) => {
-            resolveConfirm = res;
-        });
-        confirmState.show = false;
-        return value;
-    };
+    // @ts-ignore
+    // import aConfirmTemplate from '../src/components/a-confirm.html'
+    // const confirmState = reactive({
+    // 	label: '',
+    // 	show: false,
+    // 	defaultFocus: ''
+    // })
+    // let resolveConfirm: (value: boolean) => void
+    // type VueButtonType = {
+    // 	$el: HTMLButtonElement
+    // }
+    // const vConfirm = defineComponent({
+    // 	template: aConfirmTemplate,
+    // 	props: {
+    // 		confirmLabel: String,
+    // 		cancelLabel: String
+    // 	},
+    // 	setup(props, ctx) {
+    // 		const state = confirmState
+    // 		const confirmRef = ref<VueButtonType>()
+    // 		const cancelRef = ref<VueButtonType>()
+    // 		const confirm = () => {
+    // 			resolveConfirm(true)
+    // 		}
+    // 		const cancel = () => {
+    // 			resolveConfirm(false)
+    // 		}
+    // 		watch(() => state.show, value => {
+    // 			if (value) {
+    // 				ctx.root.$nextTick(() => {
+    // 					if (state.defaultFocus === 'confirm')
+    // 						confirmRef.value.$el.focus()
+    // 					else if (state.defaultFocus === 'cancel')
+    // 						cancelRef.value.$el.focus()
+    // 				})
+    // 			}
+    // 		})
+    // 		return {
+    // 			props,
+    // 			state,
+    // 			confirmRef, cancelRef,
+    // 			confirm,
+    // 			cancel
+    // 		}
+    // 	}
+    // })
+    // Vue.component('a-confirm', vConfirm)
+    // export const $confirm = async (label: string, defaultFocus = 'confirm') => {
+    // 	confirmState.label = label
+    // 	confirmState.show = true
+    // 	confirmState.defaultFocus = defaultFocus
+    // 	const value = await new Promise((res: (value: boolean) => void) => {
+    // 		resolveConfirm = res
+    // 	})
+    // 	confirmState.show = false
+    // 	return value
+    // }
 
     var template$2 = "<div>\r\n\t<span v-for=\"img of imageList\" :key=\"img[1]\">\r\n\t\t<transition name=\"background\">\r\n\t\t\t<div :style=\"{backgroundImage:img[0],...styles.backgroundImageDiv}\" v-if=\"img[2]\"></div>\r\n\t\t</transition>\r\n\t</span>\r\n</div>";
 
@@ -495,7 +504,8 @@
                     opacity: 0.8,
                     backgroundColor: state.char ? '#EEE' : '#CCC',
                     transition: 'background-color 1s ease',
-                    userSelect: 'none'
+                    userSelect: 'none',
+                    boxShadow: '0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08)'
                 },
                 char: {
                     marginLeft: '-10px',
@@ -636,11 +646,11 @@
         },
     });
 
-    var template$3 = "<div :style=\"styles.frm\">\r\n\t<v-list :style=\"styles.sectionList\">\r\n\t\t<v-subheader>\r\n\t\t\t<v-list-item-content>Sections</v-list-item-content>\r\n\t\t\t<v-list-item-action>\r\n\t\t\t\t<v-btn @click=\"newSection\">Add</v-btn>\r\n\t\t\t</v-list-item-action>\r\n\t\t</v-subheader>\r\n\t\t<v-list-item v-for=\"i of sectionListRef\" :key=\"i\" @click=\"loadSection(i)\">\r\n\t\t\t<v-list-item-content>\r\n\t\t\t\t{{i}}\r\n\t\t\t</v-list-item-content>\r\n\t\t\t<v-list-item-action>\r\n\t\t\t\t<v-btn icon color=\"warning\" @click.stop=\"deleteSection(i)\">\r\n\t\t\t\t\t<v-icon>delete</v-icon>\r\n\t\t\t\t</v-btn>\r\n\t\t\t</v-list-item-action>\r\n\t\t</v-list-item>\r\n\t</v-list>\r\n\t<div style=\"flex-grow: 1;height: 100%;padding-left: 10px\">\r\n\t\t<div style=\"display:inline-block;margin-right:10px\">\r\n\t\t\t<v-text-field label=\"Game\" v-model=\"state.gameName\" @keydown.enter=\"loadSectionList(state.gameName)\">\r\n\t\t\t</v-text-field>\r\n\t\t</div>\r\n\t\t<div style=\"display:inline-block;margin-right:10px\">\r\n\t\t\t<v-text-field label=\"Section\" v-model=\"state.sectionName\"></v-text-field>\r\n\t\t</div>\r\n\t\t<v-textarea no-resize rows=\"20\" v-model=\"state.content\" @change=\"updateSection\" ref=\"editorRef\"></v-textarea>\r\n\t</div>\r\n\t<v-confirm></v-confirm>\r\n\t<v-prompt></v-prompt>\r\n</div>";
+    var template$3 = "<div :style=\"styles.frm\">\r\n\t<a-list :style=\"styles.sectionList\">\r\n\t\t<v-subheader>\r\n\t\t\t<v-list-item-content>Sections</v-list-item-content>\r\n\t\t\t<v-list-item-action>\r\n\t\t\t\t<a-button @click=\"newSection\">Add</a-button>\r\n\t\t\t</v-list-item-action>\r\n\t\t</v-subheader>\r\n\t\t<a-list-item style=\"padding:10px;transition:all 1s ease;\" class=\"section-item\" v-for=\"i of sectionListRef\"\r\n\t\t\t:key=\"i\" @click=\"loadSection(i)\">\r\n\t\t\t<a-list-item-meta>\r\n\t\t\t\t<span :style=\"state.sectionName==i?{color: '#1890ff'}:undefined\" style=\"transition:all 0.5s ease\"\r\n\t\t\t\t\tslot=\"title\">{{i}}</span>\r\n\t\t\t</a-list-item-meta>\r\n\t\t\t<!-- <a-list-item-action> -->\r\n\t\t\t<!-- <v-btn icon color=\"warning\" @click.stop=\"deleteSection(i)\">\r\n\t\t\t\t\t<v-icon>delete</v-icon>\r\n\t\t\t\t</v-btn> -->\r\n\t\t\t<a-button shape=\"circle\" icon=\"delete\" type=\"danger\" @click.stop=\"deleteSection(i)\" />\r\n\t\t\t<!-- </a-list-item-action> -->\r\n\t\t</a-list-item>\r\n\t</a-list>\r\n\t<div style=\" flex-grow: 1;height: 100%;padding-left: 10px;display:flex;flex-direction: column;\">\r\n\t\t<div style=\"padding:10px;\">\r\n\t\t\t<div style=\"display:inline-block;margin-right:10px\">\r\n\t\t\t\t<!-- <v-text-field label=\"Game\" v-model=\"state.gameName\" @keydown.enter=\"loadSectionList(state.gameName)\">\r\n\t\t\t\t</v-text-field> -->\r\n\t\t\t\t<a-input placeholder=\"Game\" v-model=\"state.gameName\" @keydown.enter=\"loadSectionList(state.gameName)\" />\r\n\t\t\t</div>\r\n\t\t\t<div style=\"display:inline-block;margin-right:10px\">\r\n\t\t\t\t<!-- <v-text-field label=\"Section\" v-model=\"state.sectionName\"></v-text-field> -->\r\n\t\t\t\t<a-input placeholder=\"Section\" v-model=\"state.sectionName\" />\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t<!-- <v-textarea no-resize rows=\" 20\" v-model=\"state.content\" @change=\"updateSection\" ref=\"editorRef\">\r\n\t\t\t\t</v-textarea> -->\r\n\t\t<a-textarea style=\"flex-grow:1\" v-model=\"state.content\" @change=\"updateSection\" ref=\"editorRef\">\r\n\t\t</a-textarea>\r\n\t</div>\r\n\t<a-prompt></a-prompt>\r\n</div>";
 
     var editor = VueCompositionApi.defineComponent({
         template: template$3,
-        setup() {
+        setup(props, ctx) {
             const styles = VueCompositionApi.computed(() => ({
                 frm: {
                     display: 'flex',
@@ -674,14 +684,20 @@
                 await loadSection(sectionName);
             };
             const deleteSection = async (sectionName) => {
-                if (!await $confirm(`Are you sure you want to delete "${sectionName}"?`))
-                    return;
-                await postData('/api/del', {
-                    gameName: state.gameName,
-                    sectionName
+                // if (!await $confirm(`Are you sure you want to delete "${sectionName}"?`)) return
+                // @ts-ignore
+                ctx.root.$confirm({
+                    title: `Are you sure you want to delete "${sectionName}"?`,
+                    content: `The section "${sectionName}" will be permanently deleted.`,
+                    onOk: async () => {
+                        await postData('/api/del', {
+                            gameName: state.gameName,
+                            sectionName
+                        });
+                        await loadSectionList(state.gameName);
+                        state.sectionName = undefined;
+                    }
                 });
-                await loadSectionList(state.gameName);
-                state.sectionName = undefined;
             };
             const loadSection = async (name) => {
                 state.sectionName = name;
@@ -712,7 +728,7 @@
         }
     });
 
-    var template$4 = "<div style=\"padding:10px\">\r\n\t<h1>UI就随便吧，反正也没有人会用</h1>\r\n\t<div style=\"display:flex;flex-direction:column;align-items:center;margin-top:20px\">\r\n\t\t<v-btn :style=\"styles.bar\" @click=\"start\">start</v-btn>\r\n\t\t<router-link :style=\"styles.bar\" to=\"/editor\" tag=\"v-btn\">Editor</router-link>\r\n\t</div>\r\n\t<v-prompt></v-prompt>\r\n</div>";
+    var template$4 = "<div style=\"padding:10px\">\r\n\t<h1>UI就随便吧，反正也没有人会用</h1>\r\n\t<div style=\"display:flex;flex-direction:column;align-items:center;margin-top:20px\">\r\n\t\t<a-button :style=\"styles.bar\" @click=\"start\">Start</a-button>\r\n\t\t<router-link :style=\"styles.bar\" to=\"/editor\" tag=\"a-button\">Editor</router-link>\r\n\t</div>\r\n\t<a-prompt></a-prompt>\r\n</div>";
 
     // import Vue from 'vue'
     // import VueRouter from 'vue-router'
@@ -753,7 +769,6 @@
     new Vue(VueCompositionApi.defineComponent({
         el: '#app',
         router,
-        vuetify: new Vuetify()
     }));
 
 })));

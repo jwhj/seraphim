@@ -3,10 +3,10 @@ import postData from './post-data'
 import uuid from 'uuid/v4'
 // @ts-ignore
 import template from '../src/components/editor.html'
-import { $prompt, $confirm } from './dialog-utils'
+import { $prompt } from './dialog-utils'
 export default defineComponent({
 	template,
-	setup() {
+	setup(props, ctx) {
 		const styles = computed<StylesType>(() => ({
 			frm: {
 				display: 'flex',
@@ -40,13 +40,20 @@ export default defineComponent({
 			await loadSection(sectionName)
 		}
 		const deleteSection = async (sectionName: string) => {
-			if (!await $confirm(`Are you sure you want to delete "${sectionName}"?`)) return
-			await postData('/api/del', {
-				gameName: state.gameName,
-				sectionName
+			// if (!await $confirm(`Are you sure you want to delete "${sectionName}"?`)) return
+			// @ts-ignore
+			ctx.root.$confirm({
+				title: `Are you sure you want to delete "${sectionName}"?`,
+				content: `The section "${sectionName}" will be permanently deleted.`,
+				onOk: async () => {
+					await postData('/api/del', {
+						gameName: state.gameName,
+						sectionName
+					})
+					await loadSectionList(state.gameName)
+					state.sectionName = undefined
+				}
 			})
-			await loadSectionList(state.gameName)
-			state.sectionName = undefined
 		}
 		const loadSection = async (name: string) => {
 			state.sectionName = name

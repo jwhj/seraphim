@@ -43,5 +43,5 @@ const router = new VueRouter({
 new Vue(defineComponent({
 	el: '#app',
 	router,
-	vuetify: new Vuetify()
+	// vuetify: new Vuetify()
 }))

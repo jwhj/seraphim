@@ -1,33 +1,41 @@
 <div :style="styles.frm" @touchmove.prevent>
 	<background-image :src="state.backgroundImage"></background-image>
-	<v-fade-transition>
+	<transition name="optsmodal">
 		<div :style="styles.optsmodal" v-if="state.opts">
-			<v-list dark dense rounded style="background-color: black;width: 70%">
-				<v-list-item v-for="i of state.opts.length" @click="choose(i-1)">{{state.opts[i-1]}}</v-list-item>
-			</v-list>
+			<a-list :split="false" style="background-color: black;color:white;width: 70%">
+				<a-list-item class="list-item" style="transition:all 1s ease" v-for="i of state.opts.length"
+					@click="choose(i-1)">
+					<span style="margin-left:10px">
+						{{state.opts[i-1]}}
+					</span>
+				</a-list-item>
+			</a-list>
 		</div>
-	</v-fade-transition>
+	</transition>
 	<div :style="styles.dialogContainer" @click="next" @touchmove.prevent>
-		<v-card :style="styles.dialog" elevation="4">
+		<a-card :style="styles.dialog" :bodyStyle="{padding:'0'}" :bordered="false">
 			<div :style="styles.char" v-show="state.char">
 				{{state.char}}
-				<v-divider />
+				<!-- <a-divider /> -->
 			</div>
 			<span v-html="state.text"></span><span class="type"></span>
-		</v-card>
+		</a-card>
 	</div>
 	<div style="position:fixed;right:0;top:0;padding:20px">
-		<v-btn fab small @click="fastForward(10)" style="margin-right:10px;">
+		<!-- <v-btn fab small @click="fastForward(10)" style="margin-right:10px;">
 			<v-icon>accessible_forward</v-icon>
 		</v-btn>
 		<v-btn fab small @click="fastForward(Infinity)">
 			<v-icon>directions_run</v-icon>
-		</v-btn>
+		</v-btn> -->
+		<a-button shape="circle" icon="right" style="margin-right:10px" @click="fastForward(10)"></a-button>
+		<a-button shape="circle" icon="double-right" @click="fastForward(Infinity)"></a-button>
 	</div>
-	<v-dialog v-model="state.showSaves" max-width="70%" eager>
-		<v-card style="min-height:90%">
-			<display-saves @select="onSelectSave" @del="deleteSave" />
-		</v-card>
-	</v-dialog>
-	<v-prompt></v-prompt>
+	<a-modal centered width="70%" :bodyStyle="{height:'90%'}" :closable="false" :footer="null"
+		v-model="state.showSaves">
+		<!-- <v-card style="min-height:90%"> -->
+		<display-saves @select="onSelectSave" @del="deleteSave" />
+		<!-- </v-card> -->
+	</a-modal>
+	<a-prompt></a-prompt>
 </div>

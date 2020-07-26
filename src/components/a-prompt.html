@@ -1,6 +1,5 @@
-<v-dialog v-model="state.show" max-width="25em" persistent eager>
+<!-- <v-dialog v-model="state.show" max-width="25em" persistent eager>
 	<v-card style="padding:10px">
-		<!-- <v-card-title style="padding-left:0">{{state.label}}</v-card-title> -->
 		<div style="padding:10px">
 			<v-text-field :label="state.label" v-model="state.text" autofocus outlined dense @keydown.stop
 				@keydown.enter="confirm">
@@ -11,4 +10,9 @@
 			<v-btn @click="cancel" text small>{{props.cancelLable || 'Cancel'}}</v-btn>
 		</div>
 	</v-card>
-</v-dialog>
+</v-dialog> -->
+<a-modal :closable="false" :maskClosable="false" v-model="state.show" @cancel="cancel" @ok="confirm">
+	<div stype="padding:10px">
+		<a-input :placeholder="state.label" v-model="state.text" ref="inputRef" @pressEnter="confirm" />
+	</div>
+</a-modal>

@@ -1,8 +1,8 @@
 <div style="padding:10px">
 	<h1>UI就随便吧，反正也没有人会用</h1>
 	<div style="display:flex;flex-direction:column;align-items:center;margin-top:20px">
-		<v-btn :style="styles.bar" @click="start">start</v-btn>
-		<router-link :style="styles.bar" to="/editor" tag="v-btn">Editor</router-link>
+		<a-button :style="styles.bar" @click="start">Start</a-button>
+		<router-link :style="styles.bar" to="/editor" tag="a-button">Editor</router-link>
 	</div>
-	<v-prompt></v-prompt>
+	<a-prompt></a-prompt>
 </div>
